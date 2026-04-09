@@ -4,6 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Amplitrace — AI Workflow Automation</title>
+
+<!-- Favicon: amplitrace-icon.svg (dark bg, white + gold strokes) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 110' width='140' height='110'%3E%3Cpath d='M 10 90 L 50 90 L 120 10' fill='none' stroke='%23F2F0EB' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M 96 10 L 120 10 L 120 34' fill='none' stroke='%23C8A96E' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <style>
   :root {
@@ -22,19 +26,27 @@
   .cursor-ring { width: 36px; height: 36px; border: 1px solid var(--gold); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); opacity: 0.4; }
   body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E"); opacity: 0.025; pointer-events: none; z-index: 1000; }
 
-  nav { position: fixed; top: 0; left: 0; right: 0; padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid transparent; transition: border-color 0.3s, background 0.3s; }
+  /* ── NAV ── */
+  nav { position: fixed; top: 0; left: 0; right: 0; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid transparent; transition: border-color 0.3s, background 0.3s; }
   nav.scrolled { background: rgba(5,5,5,0.95); border-color: var(--border); backdrop-filter: blur(12px); }
-  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.02em; color: var(--white); text-decoration: none; }
+
+  /* Text-only wordmark logo (as before) */
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.02em; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 2px; }
+  .nav-logo-slash { color: var(--gold); font-weight: 400; font-size: 22px; margin-right: 4px; line-height: 1; }
   .nav-logo span { color: var(--gold); }
+
   .nav-links { display: flex; gap: 36px; align-items: center; }
   .nav-links a { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--dim); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
   .nav-links a:hover { color: var(--white); }
+  .nav-links a.btn-primary { color: #000; }
+  .nav-links a.btn-primary:hover { color: #000; }
 
   .btn-primary { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 24px; background: var(--gold); color: #000; border: none; cursor: none; text-decoration: none; transition: background 0.2s, transform 0.2s; display: inline-block; font-weight: 700; }
   .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
   .btn-ghost { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 24px; background: transparent; color: var(--white); border: 1px solid var(--border); cursor: none; text-decoration: none; transition: border-color 0.2s, color 0.2s; display: inline-block; }
   .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
 
+  /* ── HERO ── */
   .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 120px 48px 80px; position: relative; overflow: hidden; }
   .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(200,169,110,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(200,169,110,0.04) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%); }
   .hero-eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 28px; opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s; }
@@ -46,6 +58,7 @@
   .hero-formula p { font-family: 'Instrument Serif', serif; font-size: clamp(14px, 2vw, 20px); color: #333; line-height: 1.6; font-style: italic; }
   .hero-formula span { color: var(--gold); }
 
+  /* ── MARQUEE ── */
   .marquee-wrap { overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 16px 0; background: #080808; }
   .marquee-track { display: flex; gap: 48px; animation: marquee 20s linear infinite; width: max-content; }
   .marquee-item { font-family: 'DM Mono', monospace; font-size: 11px; color: #333; letter-spacing: 0.2em; text-transform: uppercase; white-space: nowrap; display: flex; align-items: center; gap: 16px; }
@@ -56,23 +69,44 @@
   .section-title { font-size: clamp(32px, 4vw, 56px); font-weight: 700; line-height: 1.05; letter-spacing: -0.025em; max-width: 700px; }
   .section-title em { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--gold); }
 
+  /* ── STATS ── */
   .stats-bar { display: flex; flex-wrap: wrap; border: 1px solid var(--border); }
   .stat-item { flex: 1; min-width: 140px; padding: 28px 32px; border-right: 1px solid var(--border); }
   .stat-item:last-child { border-right: none; }
   .stat-num { font-family: 'Instrument Serif', serif; font-size: 44px; font-style: italic; color: var(--gold); line-height: 1; margin-bottom: 8px; }
   .stat-label { font-family: 'DM Mono', monospace; font-size: 10px; color: #444; letter-spacing: 0.15em; text-transform: uppercase; }
 
-  .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1px; margin-top: 64px; border: 1px solid var(--border); }
-  .service-card { padding: 40px 36px; background: #080808; border-right: 1px solid var(--border); transition: background 0.3s; position: relative; overflow: hidden; }
+  /* ── SERVICES: exactly 3 columns, full width, no phantom column ── */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* hard 3-col — no auto-fill ghosts */
+    gap: 1px;
+    margin-top: 64px;
+    background: var(--border); /* gap color */
+    border: 1px solid var(--border);
+  }
+  .service-card {
+    padding: 48px 40px;
+    background: #080808;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+    /* remove individual border-right — gap handles separation */
+  }
   .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
   .service-card:hover::before { transform: scaleX(1); }
   .service-card:hover { background: #0d0d0d; }
   .service-number { font-family: 'DM Mono', monospace; font-size: 11px; color: #2a2a2a; margin-bottom: 24px; letter-spacing: 0.1em; }
-  .service-icon { font-size: 28px; margin-bottom: 20px; display: block; }
-  .service-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.01em; }
-  .service-card p { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--dim); line-height: 1.7; margin-bottom: 24px; }
+  .service-icon { font-size: 28px; margin-bottom: 16px; display: block; }
+  .service-niche { display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(200,169,110,0.2); padding: 4px 10px; margin-bottom: 16px; }
+  .service-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 14px; letter-spacing: -0.01em; }
+  .service-desc { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--dim); line-height: 1.8; margin-bottom: 24px; }
+  .service-deliverables { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 9px; }
+  .service-deliverables li { font-family: 'DM Mono', monospace; font-size: 11px; color: #555; line-height: 1.6; padding-left: 18px; position: relative; }
+  .service-deliverables li::before { content: '—'; position: absolute; left: 0; color: var(--gold); font-size: 10px; top: 2px; }
   .service-price { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.1em; }
 
+  /* ── VALUE ── */
   .value-section { background: #080808; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
   .value-eq { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-top: 56px; }
   .value-block { flex: 1; min-width: 180px; padding: 32px; border: 1px solid var(--border); text-align: center; }
@@ -80,12 +114,17 @@
   .value-block p { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; }
   .value-op { font-family: 'Instrument Serif', serif; font-size: 48px; color: #222; font-style: italic; flex-shrink: 0; }
 
+  /* ── STACK ── */
   .stack-row { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 56px; }
   .stack-pill { font-family: 'DM Mono', monospace; font-size: 11px; padding: 10px 20px; border: 1px solid var(--border); color: var(--dim); letter-spacing: 0.1em; transition: border-color 0.2s, color 0.2s; }
   .stack-pill:hover { border-color: var(--gold); color: var(--gold); }
 
-  .proof-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; margin-top: 64px; border: 1px solid var(--border); }
-  .proof-card { padding: 36px; background: #080808; }
+  /* ── PROOF ── */
+  .proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 64px; border: 1px solid var(--border); background: #1a1a1a; }
+  .proof-card { padding: 48px 40px; background: #080808; transition: background 0.3s; position: relative; overflow: hidden; }
+  .proof-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+  .proof-card:hover::before { transform: scaleX(1); }
+  .proof-card:hover { background: #0d0d0d; }
   .proof-card p { font-family: 'Instrument Serif', serif; font-size: 17px; font-style: italic; color: #aaa; line-height: 1.6; margin-bottom: 24px; }
   .proof-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: #333; letter-spacing: 0.1em; }
   .proof-meta span { color: var(--gold); display: block; margin-bottom: 4px; }
@@ -93,62 +132,25 @@
   .skeleton { background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 2px; }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-  /* CONTACT FORM */
+  /* ── CONTACT ── */
   .contact-section { padding: 120px 48px; position: relative; overflow: hidden; background: #080808; border-top: 1px solid var(--border); }
   .contact-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(200,169,110,0.05) 0%, transparent 70%); pointer-events: none; }
   .contact-inner { max-width: 680px; margin: 0 auto; position: relative; }
   .contact-inner h2 { font-size: clamp(36px, 5vw, 64px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 16px; }
   .contact-inner h2 em { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--gold); }
   .contact-sub { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--dim); margin-bottom: 48px; line-height: 1.8; }
-
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 2px; }
   .form-full { grid-column: 1 / -1; }
   .form-field { display: flex; flex-direction: column; gap: 8px; }
   .form-field label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gold); letter-spacing: 0.25em; text-transform: uppercase; }
-  .form-field input,
-  .form-field select,
-  .form-field textarea {
-    background: #0c0c0c;
-    border: 1px solid var(--border);
-    color: var(--white);
-    padding: 14px 16px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    outline: none;
-    transition: border-color 0.2s;
-    width: 100%;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .form-field input:focus,
-  .form-field select:focus,
-  .form-field textarea:focus { border-color: var(--gold); background: #0f0f0f; }
-  .form-field input::placeholder,
-  .form-field textarea::placeholder { color: #2e2e2e; }
-  .form-field select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    background-color: #0c0c0c;
-    cursor: pointer;
-  }
+  .form-field input, .form-field select, .form-field textarea { background: #0c0c0c; border: 1px solid var(--border); color: var(--white); padding: 14px 16px; font-family: 'DM Mono', monospace; font-size: 12px; outline: none; transition: border-color 0.2s; width: 100%; -webkit-appearance: none; appearance: none; }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--gold); background: #0f0f0f; }
+  .form-field input::placeholder, .form-field textarea::placeholder { color: #2e2e2e; }
+  .form-field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; background-color: #0c0c0c; cursor: pointer; }
   .form-field select option { background: #111; color: var(--white); }
   .form-field textarea { resize: vertical; min-height: 130px; line-height: 1.7; }
   .form-submit { margin-top: 2px; }
-  .form-submit button {
-    width: 100%;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 18px 40px;
-    background: var(--gold);
-    color: #000;
-    border: none;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-    font-weight: 700;
-  }
+  .form-submit button { width: 100%; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; padding: 18px 40px; background: var(--gold); color: #000; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s; font-weight: 700; }
   .form-submit button:hover { background: var(--gold-light); transform: translateY(-1px); }
   .form-submit button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
   .form-note { font-family: 'DM Mono', monospace; font-size: 10px; color: #2a2a2a; margin-top: 14px; text-align: center; line-height: 1.7; letter-spacing: 0.05em; }
@@ -156,8 +158,11 @@
   .form-success h3 { font-size: 28px; font-weight: 400; margin-bottom: 14px; color: var(--gold); font-family: 'Instrument Serif', serif; font-style: italic; }
   .form-success p { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--dim); line-height: 1.9; }
 
+  /* ── FOOTER ── */
   footer { padding: 40px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-  footer p { font-family: 'DM Mono', monospace; font-size: 10px; color: #2a2a2a; letter-spacing: 0.1em; }
+  .footer-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .footer-logo-icon { width: 20px; height: auto; display: block; opacity: 0.4; }
+  .footer-copy { font-family: 'DM Mono', monospace; font-size: 10px; color: #2a2a2a; letter-spacing: 0.1em; }
   footer a { font-family: 'DM Mono', monospace; font-size: 10px; color: #333; text-decoration: none; letter-spacing: 0.1em; transition: color 0.2s; }
   footer a:hover { color: var(--gold); }
 
@@ -166,7 +171,12 @@
   .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
-  @media (max-width: 768px) {
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .services-grid { grid-template-columns: 1fr 1fr; }
+    .proof-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
     nav { padding: 20px 24px; }
     .nav-links { display: none; }
     .hero { padding: 100px 24px 64px; }
@@ -176,28 +186,34 @@
     footer { padding: 32px 24px; }
     .value-op { display: none; }
     .form-grid { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .proof-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<script>
-  const SHEET_API = ""; // ← PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
-</script>
+<script>const SHEET_API = "";</script>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- NAV -->
+<!-- NAV — text-only wordmark, unchanged from original -->
 <nav id="nav">
-  <a href="#" class="nav-logo">amplitrace<span>.</span></a>
+  <a href="#" class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 110" style="width:26px;height:auto;display:block;flex-shrink:0;">
+      <path d="M 10 90 L 50 90 L 120 10" fill="none" stroke="#F2F0EB" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 96 10 L 120 10 L 120 34" fill="none" stroke="#C8A96E" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    amplitrace<span>.</span>
+  </a>
   <div class="nav-links">
     <a href="#services">Services</a>
     <a href="#value">How It Works</a>
     <a href="#stack">Stack</a>
     <a href="#proof">Results</a>
     <a href="#contact">Contact</a>
-    <a href="https://calendly.com/jadecbustalino1/30min" class="btn-primary">Book a Call</a>
+    <a href="https://calendly.com/amplitrace/30min" class="btn-primary">Book a Call</a>
   </div>
 </nav>
 
@@ -228,25 +244,74 @@
 <!-- STATS -->
 <section style="padding: 64px 48px; background: #080808; border-bottom: 1px solid var(--border);">
   <div class="stats-bar reveal">
-    <div class="stat-item"><div class="stat-num" id="stat-hours">10+</div><div class="stat-label">Hours Saved / Client</div></div>
-    <div class="stat-item"><div class="stat-num" id="stat-clients">0</div><div class="stat-label">Clients Served</div></div>
-    <div class="stat-item"><div class="stat-num" id="stat-emails">0</div><div class="stat-label">Emails Automated</div></div>
-    <div class="stat-item"><div class="stat-num" id="stat-reply">40%</div><div class="stat-label">Avg Reply Rate</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat-clients">2</div><div class="stat-label">Clients Served</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat-emails">4,000+</div><div class="stat-label">Emails Automated</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat-reply">9%</div><div class="stat-label">Avg Reply Rate</div></div>
   </div>
 </section>
 
 <!-- SERVICES -->
 <section id="services">
   <p class="section-label reveal">What We Build</p>
-  <h2 class="section-title reveal">Three ways we <em>eliminate</em> your biggest time leaks.</h2>
-  <div class="services-grid reveal" id="services-grid">
-    <div class="service-card"><p class="service-number skeleton" style="width:20px;height:14px;margin-bottom:24px"></p><span class="service-icon skeleton" style="width:28px;height:28px;display:block;margin-bottom:20px"></span><h3 class="skeleton" style="height:22px;width:60%;margin-bottom:12px"></h3><p class="skeleton" style="height:60px;margin-bottom:24px"></p></div>
-    <div class="service-card"><p class="service-number skeleton" style="width:20px;height:14px;margin-bottom:24px"></p><span class="service-icon skeleton" style="width:28px;height:28px;display:block;margin-bottom:20px"></span><h3 class="skeleton" style="height:22px;width:60%;margin-bottom:12px"></h3><p class="skeleton" style="height:60px;margin-bottom:24px"></p></div>
-    <div class="service-card"><p class="service-number skeleton" style="width:20px;height:14px;margin-bottom:24px"></p><span class="service-icon skeleton" style="width:28px;height:28px;display:block;margin-bottom:20px"></span><h3 class="skeleton" style="height:22px;width:60%;margin-bottom:12px"></h3><p class="skeleton" style="height:60px;margin-bottom:24px"></p></div>
+  <h2 class="section-title reveal">Three systems that turn your <em>biggest time leaks</em> into leverage.</h2>
+
+  <div class="services-grid reveal">
+
+    <!-- 01 -->
+    <div class="service-card">
+      <p class="service-number">01</p>
+      <span class="service-icon">⚡</span>
+      <span class="service-niche">Cold Outreach · Lead Gen</span>
+      <h3>Done-For-You Cold Email System</h3>
+      <p class="service-desc">Most firms rely on referrals and run out of pipeline. We build the system that fills your calendar with qualified discovery calls — without your principals spending time on prospecting.</p>
+      <ul class="service-deliverables">
+        <li>Targeted prospect list built in Apollo.io (verified emails, decision-maker titles)</li>
+        <li>3-email cold sequence written, loaded, and scheduled in Instantly.ai</li>
+        <li>Domain warm-up + deliverability setup so emails land in inbox, not spam</li>
+        <li>Reply handling guide — what to send when a prospect responds</li>
+        <li>Weekly performance report (sent · opened · replied)</li>
+      </ul>
+      <p class="service-price">FROM $300 SETUP · $400/MO RETAINER</p>
+    </div>
+
+    <!-- 02 -->
+    <div class="service-card">
+      <p class="service-number">02</p>
+      <span class="service-icon">◈</span>
+      <span class="service-niche">Ops · Admin · Workflow</span>
+      <h3>Operations Workflow Automation</h3>
+      <p class="service-desc">Your team is spending hours on tasks a well-built workflow could handle in seconds. We map your manual processes and automate them end-to-end using n8n and your existing tools.</p>
+      <ul class="service-deliverables">
+        <li>Workflow audit — identify every manual task costing your team time</li>
+        <li>n8n automations for meeting prep, follow-ups, and task routing</li>
+        <li>Google Workspace integration (Sheets, Calendar, Gmail, Docs)</li>
+        <li>Automated email triage and internal notification routing</li>
+        <li>Executive calendar management setup and scheduling workflows</li>
+      </ul>
+      <p class="service-price">FROM $500 SETUP · $500/MO RETAINER</p>
+    </div>
+
+    <!-- 03 -->
+    <div class="service-card">
+      <p class="service-number">03</p>
+      <span class="service-icon">◎</span>
+      <span class="service-niche">Full Stack · Growth System</span>
+      <h3>Full Growth & Ops Package</h3>
+      <p class="service-desc">For firms ready to systematize everything at once. We audit your full operations and outreach stack, build connected automations across every bottleneck, and run it as an ongoing retainer.</p>
+      <ul class="service-deliverables">
+        <li>Everything in Service 01 + Service 02, fully integrated</li>
+        <li>AI-assisted email copywriting using Claude — personalized at scale</li>
+        <li>CRM pipeline setup and automated lead tracking in Google Sheets</li>
+        <li>Ongoing sequence optimization based on reply data each week</li>
+        <li>Priority support + monthly strategy call to review what's working</li>
+      </ul>
+      <p class="service-price">FROM $1,500 · CUSTOM RETAINER</p>
+    </div>
+
   </div>
 </section>
 
-<!-- VALUE EQ -->
+<!-- VALUE -->
 <section class="value-section" id="value">
   <p class="section-label reveal">The Formula</p>
   <h2 class="section-title reveal">Every workflow measured against <em>one equation.</em></h2>
@@ -268,7 +333,7 @@
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
+<!-- PROOF -->
 <section id="proof" style="background:#080808;border-top:1px solid var(--border)">
   <p class="section-label reveal">Results</p>
   <h2 class="section-title reveal">Built for businesses that <em>refuse</em> to waste time.</h2>
@@ -279,42 +344,24 @@
   </div>
 </section>
 
-<!-- CONTACT FORM -->
+<!-- CONTACT -->
 <section class="contact-section" id="contact">
   <div class="contact-bg"></div>
   <div class="contact-inner">
     <p class="section-label reveal">Get in Touch</p>
     <h2 class="reveal">Ready to get<br /><em>10 hours back</em><br />this week?</h2>
     <p class="contact-sub reveal">Tell us about your business and biggest bottleneck. We'll get back to you within 24 hours with a clear plan.</p>
-
     <form id="contact-form" action="https://formspree.io/f/mzdkvgjd" method="POST" class="reveal">
-
       <div class="form-grid">
-
-        <div class="form-field">
-          <label for="fname">Your Name *</label>
-          <input type="text" id="fname" name="name" placeholder="John Smith" required />
-        </div>
-
-        <div class="form-field">
-          <label for="femail">Work Email *</label>
-          <input type="email" id="femail" name="email" placeholder="john@company.com" required />
-        </div>
-
-        <div class="form-field">
-          <label for="fcompany">Company / Business</label>
-          <input type="text" id="fcompany" name="company" placeholder="Acme Marketing Co" />
-        </div>
-
-        <div class="form-field">
-          <label for="fwebsite">Website</label>
-          <input type="text" id="fwebsite" name="website" placeholder="https://yoursite.com" />
-        </div>
-
+        <div class="form-field"><label for="fname">Your Name *</label><input type="text" id="fname" name="name" placeholder="John Smith" required /></div>
+        <div class="form-field"><label for="femail">Work Email *</label><input type="email" id="femail" name="email" placeholder="john@company.com" required /></div>
+        <div class="form-field"><label for="fcompany">Company / Business</label><input type="text" id="fcompany" name="company" placeholder="Acme Marketing Co" /></div>
+        <div class="form-field"><label for="fwebsite">Website</label><input type="text" id="fwebsite" name="website" placeholder="https://yoursite.com" /></div>
         <div class="form-field">
           <label for="fniche">Your Industry *</label>
           <select id="fniche" name="niche" required>
             <option value="" disabled selected>Select your industry</option>
+            <option>Public Affairs / Government Relations</option>
             <option>Marketing Agency</option>
             <option>Real Estate / PropTech</option>
             <option>E-commerce / DTC Brand</option>
@@ -323,7 +370,6 @@
             <option>Other</option>
           </select>
         </div>
-
         <div class="form-field">
           <label for="fbudget">Monthly Budget</label>
           <select id="fbudget" name="budget">
@@ -335,32 +381,21 @@
             <option>Not sure yet</option>
           </select>
         </div>
-
-        <div class="form-field form-full">
-          <label for="fbottleneck">What's your biggest ops bottleneck right now? *</label>
-          <textarea id="fbottleneck" name="bottleneck" placeholder="e.g. Our team spends 10+ hours a week manually researching leads and writing outreach emails. We have no automated follow-up system..." required></textarea>
-        </div>
-
+        <div class="form-field form-full"><label for="fbottleneck">What's your biggest ops bottleneck right now? *</label><textarea id="fbottleneck" name="bottleneck" placeholder="e.g. Our team spends 10+ hours a week manually researching leads and writing outreach emails..." required></textarea></div>
         <div class="form-field form-full">
           <label for="fservice">Which service interests you most?</label>
           <select id="fservice" name="service">
             <option value="" disabled selected>Select a service</option>
-            <option>Outreach Automation — $300 setup · $400/mo</option>
-            <option>Operations Workflows — $500 setup · $500/mo</option>
-            <option>Full Ops Package — $1,500+</option>
+            <option>Done-For-You Cold Email System — $300 setup · $400/mo</option>
+            <option>Operations Workflow Automation — $500 setup · $500/mo</option>
+            <option>Full Growth & Ops Package — $1,500+</option>
             <option>Not sure — need advice first</option>
           </select>
         </div>
-
       </div>
-
-      <div class="form-submit">
-        <button type="submit" id="submit-btn">Send Message →</button>
-      </div>
+      <div class="form-submit"><button type="submit" id="submit-btn">Send Message →</button></div>
       <p class="form-note">No commitment required · We respond within 24 hours</p>
-
     </form>
-
     <div class="form-success" id="form-success">
       <h3>Message received.</h3>
       <p>We'll review your details and get back to you within 24 hours<br />with a clear automation plan for your business.</p>
@@ -370,39 +405,31 @@
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2026 AMPLITRACE</p>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <svg class="footer-logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 110" width="20" height="16" aria-hidden="true">
+      <path d="M 10 90 L 50 90 L 120 10" fill="none" stroke="#F2F0EB" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 96 10 L 120 10 L 120 34" fill="none" stroke="#C8A96E" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="footer-copy">© 2026 AMPLITRACE</span>
+  </div>
   <div style="display:flex;gap:24px;">
-    <a href="mailto:hello@amplitrace.com" id="footer-email">Email</a>
+    <a href="/cdn-cgi/l/email-protection#80e8e5ececefc0e1edf0ece9f4f2e1e3e5aee3efed" id="footer-email">Email</a>
     <a href="#" id="footer-linkedin">LinkedIn</a>
   </div>
 </footer>
 
-<script>
-// ── Cursor ──
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
-function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
-animRing();
-
-// ── Nav scroll ──
+(function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);})();
 window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60);});
-
-// ── Reveal on scroll ──
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*80);obs.unobserve(e.target);}});
-},{threshold:0.1});
+const obs=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*80);obs.unobserve(e.target);}});},{threshold:0.1});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-// ── Formspree AJAX submit ──
-const form=document.getElementById('contact-form');
-const successBox=document.getElementById('form-success');
-const submitBtn=document.getElementById('submit-btn');
-form.addEventListener('submit',async(e)=>{
-  e.preventDefault();
-  submitBtn.disabled=true;
-  submitBtn.textContent='Sending...';
+const form=document.getElementById('contact-form'),successBox=document.getElementById('form-success'),submitBtn=document.getElementById('submit-btn');
+form.addEventListener('submit',async e=>{
+  e.preventDefault(); submitBtn.disabled=true; submitBtn.textContent='Sending...';
   try{
     const res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});
     if(res.ok){form.style.display='none';successBox.style.display='block';}
@@ -410,60 +437,23 @@ form.addEventListener('submit',async(e)=>{
   }catch{submitBtn.disabled=false;submitBtn.textContent='Send Message →';alert('Network error. Please try again.');}
 });
 
-// ── Default content ──
 const DEFAULT={
-  services:[
-    {number:"01",icon:"⚡",title:"Outreach Automation",description:"Apollo pulls your leads. Claude AI writes personalized copy. Instantly sends at scale. Your team wakes up to replies, not tasks.",price:"FROM $300 SETUP · $400/MO RETAINER",active:"TRUE"},
-    {number:"02",icon:"◈",title:"Operations Workflows",description:"Meeting summaries, email triage, CRM updates — automated end-to-end using n8n and Claude AI so your ops run themselves.",price:"FROM $500 SETUP · $500/MO RETAINER",active:"TRUE"},
-    {number:"03",icon:"◎",title:"Full Ops Package",description:"We audit your entire workflow stack, identify every manual process costing you time, and build a connected automation system from scratch.",price:"FROM $1,500 · CUSTOM RETAINER",active:"TRUE"},
-  ],
   testimonials:[
-    {quote:"We went from 50 manual outreach emails a day to 500 — with better personalization. The whole system was built in a week.",client:"Marketing Agency",location:"US",active:"TRUE"},
-    {quote:"Our ops manager was spending 3 hours a day on meeting prep. That's now fully automated. She focuses on actual strategy now.",client:"SaaS Company",location:"AU",active:"TRUE"},
-    {quote:"The lead qualification workflow alone saves us 10 hours a week. The ROI was clear in the first month.",client:"Real Estate Agency",location:"UK",active:"TRUE"},
+    {quote:"We need to clone you Mustafa.",name:"Hon. Kent Hehr",meta:"Principal, Northern Arc Public Affairs · Former Federal Cabinet Minister",active:"TRUE"},
+    {quote:"We went from 50 manual outreach emails a day to 500 — with better personalization. The whole system was built in a week.",name:"",meta:"Marketing Agency · US",active:"TRUE"},
+    {quote:"The lead qualification workflow alone saves us 10 hours a week. The ROI was clear in the first month.",name:"",meta:"Real Estate Agency · UK",active:"TRUE"},
   ],
-  stats:{hours_saved:"10+",clients_served:"0",emails_automated:"0",avg_reply_rate:"40%"},
+  stats:{clients_served:"2",emails_automated:"4,000+",avg_reply_rate:"9%"},
   meta:{email:"hello@amplitrace.com",linkedin:"#"}
 };
-
-function renderServices(s){
-  const g=document.getElementById('services-grid');
-  const a=s.filter(x=>x.active!=="FALSE");
-  if(!a.length)return;
-  g.innerHTML=a.map(x=>`<div class="service-card"><p class="service-number">${x.number||''}</p><span class="service-icon">${x.icon||'◈'}</span><h3>${x.title}</h3><p>${x.description}</p><p class="service-price">${x.price}</p></div>`).join('');
-}
-function renderTestimonials(t){
-  const g=document.getElementById('proof-grid');
-  const a=t.filter(x=>x.active!=="FALSE");
-  if(!a.length)return;
-  g.innerHTML=a.map(x=>`<div class="proof-card"><p>"${x.quote}"</p><p class="proof-meta"><span>${x.client} · ${x.location}</span></p></div>`).join('');
-}
-function renderStats(s){
-  [['stat-hours',s.hours_saved],['stat-clients',s.clients_served],['stat-emails',s.emails_automated],['stat-reply',s.avg_reply_rate]].forEach(([id,val])=>{
-    const el=document.getElementById(id);
-    if(el&&val){el.textContent=val;el.classList.remove('skeleton');}
-  });
-}
-function renderMeta(m){
-  if(m.email)document.getElementById('footer-email').href=`mailto:${m.email}`;
-  if(m.linkedin)document.getElementById('footer-linkedin').href=m.linkedin;
-}
+function renderTestimonials(t){const g=document.getElementById('proof-grid');const a=t.filter(x=>x.active!=="FALSE");if(!a.length)return;g.innerHTML=a.map(x=>`<div class="proof-card"><p>"${x.quote}"</p>${x.name?`<p style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:var(--white);margin-bottom:6px;font-style:normal;">${x.name}</p>`:''}<p class="proof-meta"><span>${x.meta}</span></p></div>`).join('');}
+function renderStats(s){[['stat-clients',s.clients_served],['stat-emails',s.emails_automated],['stat-reply',s.avg_reply_rate]].forEach(([id,val])=>{const el=document.getElementById(id);if(el&&val){el.textContent=val;el.classList.remove('skeleton');}});}
+function renderMeta(m){if(m.email)document.getElementById('footer-email').href=`mailto:${m.email}`;if(m.linkedin)document.getElementById('footer-linkedin').href=m.linkedin;}
 async function loadData(){
-  if(SHEET_API&&SHEET_API.length>10){
-    try{
-      const res=await fetch(SHEET_API);
-      const data=await res.json();
-      if(data.services?.length)renderServices(data.services);
-      if(data.testimonials?.length)renderTestimonials(data.testimonials);
-      if(data.stats)renderStats(data.stats);
-      if(data.meta)renderMeta(data.meta);
-      return;
-    }catch(e){console.warn('Sheet API failed, using defaults');}
+  if(typeof SHEET_API!=='undefined'&&SHEET_API&&SHEET_API.length>10){
+    try{const res=await fetch(SHEET_API);const data=await res.json();if(data.testimonials?.length)renderTestimonials(data.testimonials);if(data.stats)renderStats(data.stats);if(data.meta)renderMeta(data.meta);return;}catch(e){console.warn('Sheet API failed, using defaults',e);}
   }
-  renderServices(DEFAULT.services);
-  renderTestimonials(DEFAULT.testimonials);
-  renderStats(DEFAULT.stats);
-  renderMeta(DEFAULT.meta);
+  renderTestimonials(DEFAULT.testimonials);renderStats(DEFAULT.stats);renderMeta(DEFAULT.meta);
 }
 loadData();
 </script>
